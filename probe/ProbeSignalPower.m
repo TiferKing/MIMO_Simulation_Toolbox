@@ -1,19 +1,24 @@
-function [TotalPowerRMS, ChannelPowerRMS, TotalPowerPeak, ChannelPowerPeak] = ProbeSignalPower(Signal)
+function [TotalPowerRMS, ChannelPowerRMS, TotalPowerPeak, ChannelPowerPeak] = ProbeSignalPower(Signal, Title)
 %ProbeBitError A probe that detects signal power.
 %Introduction:
 %   Calculate signal power.
 %Syntax:
 %   TotalPowerRMS = ProbeSignalPower(Signal)
 %   [TotalPowerRMS, ChannelPowerRMS, TotalPowerPeak, ChannelPowerPeak] = ProbeSignalPower(Signal)
+%   [ ___ ] = ProbeSignalPower(Signal, Title)
 %Description:
 %   TotalPowerRMS = ProbeSignalPower(Signal)
 %       returns the rms power of signal.
 %   [TotalPowerRMS, ChannelPowerRMS, TotalPowerPeak, ChannelPowerPeak] = ProbeSignalPower(Signal)
 %       returns the rms power of signals, the rms powers in each channel,the
 %       peak power of signals, the peak powers in each channel.
+%   [ ___ ] = ProbeSignalPower(Signal, Title)
+%       display all total power after 'Title' on console.
 %Input Arguments:
 %   Signal: (Signal)
 %       Input signals.
+%   Title: (string)
+%       Probe display title.
 %Output Arguments:
 %   TotalPowerRMS: (double)
 %       The rms power of signals for all channels.
@@ -33,5 +38,11 @@ function [TotalPowerRMS, ChannelPowerRMS, TotalPowerPeak, ChannelPowerPeak] = Pr
     TotalPowerRMS = sum(ChannelPowerRMS);
     ChannelPowerPeak = sum((max(abs(Signal.Signal), [], 2) * Signal.ReferenceVoltage) .^ 2 / Signal.ReferenceImpedance, 2);
     TotalPowerPeak = sum(ChannelPowerPeak);
+    if(exist('Title','var'))
+        DisplayString = [Title '_PowerRMS = ' num2str(pow2db(TotalPowerRMS)) 'dBW'];
+        disp(DisplayString);
+        DisplayString = [Title '_PowerPeak = ' num2str(pow2db(TotalPowerPeak)) 'dBW'];
+        disp(DisplayString);
+    end
 end
 

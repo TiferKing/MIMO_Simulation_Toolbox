@@ -1,21 +1,26 @@
-function [ErrorRate, ErrorNum, TotalNum, ErrorPos] = ProbeBitError(DataTx, DataRx)
+function [ErrorRate, ErrorNum, TotalNum, ErrorPos] = ProbeBitError(DataTx, DataRx, Title)
 %ProbeBitError A probe that detects bit errors in the binary stream.
 %Introduction:
 %   Compare two binary streams and get the error bits.
 %Syntax:
 %   ErrorRate = ProbeBitError(DataTx, DataRx)
 %   [ErrorRate, ErrorNum, TotalNum, ErrorPos] = ProbeBitError(DataTx, DataRx)
+%   [ ___ ] = ProbeBitError(DataTx, DataRx, Title)
 %Description:
 %   ErrorRate = ProbeBitError(DataTx, DataRx)
 %       returns the bit error rate.
 %   [ErrorRate, ErrorNum, TotalNum, ErrorPos] = ProbeBitError(DataTx, DataRx)
 %       returns a vector that contains the bit error rate, the total number
 %       of errors, the total number of bits and the error positions.
+%   [ ___ ] = ProbeBitError(DataTx, DataRx, Title)
+%       display all these results after 'Title' on console.
 %Input Arguments:
 %   DataTx: (DigitalSignal)
 %       Data stream transmitted.
 %   DataRx: (DigitalSignal)
 %       Data stream received.
+%   Title: (string)
+%       Probe display title.
 %Output Arguments:
 %   ErrorRate: (double)
 %       The error rate of the binary stream.
@@ -30,11 +35,27 @@ function [ErrorRate, ErrorNum, TotalNum, ErrorPos] = ProbeBitError(DataTx, DataR
 %License:
 %   Please refer to the 'LICENSE' file included in the root directory 
 %   of the project.
-
-    ErrorPos = find(DataTx.Signal ~= DataRx.Signal);
-    [BitChannel, BitLength] = size(DataTx.Signal);
-    TotalNum = BitChannel * BitLength;
-    ErrorNum = size(ErrorPos , 1);
-    ErrorRate = ErrorNum / TotalNum;
+    
+    if(size(DataTx.Signal) == size(DataRx.Signal))
+        ErrorPos = find(DataTx.Signal ~= DataRx.Signal);
+        [BitChannel, BitLength] = size(DataTx.Signal);
+        TotalNum = BitChannel * BitLength;
+        ErrorNum = size(ErrorPos , 1);
+        ErrorRate = ErrorNum / TotalNum;
+    else
+        % Bit stream with different size
+        [BitChannel, BitLength] = size(DataTx.Signal);
+        TotalNum = BitChannel * BitLength;
+        ErrorNum = TotalNum;
+        ErrorRate = TotalNum / TotalNum;
+    end
+    if(exist('Title','var'))
+        DisplayString = [Title '_TotalBitNum = ' num2str(TotalNum) ' bits.'];
+        disp(DisplayString);
+        DisplayString = [Title '_ErrorNum    = ' num2str(ErrorNum) ' bits.'];
+        disp(DisplayString);
+        DisplayString = [Title '_ErrorRate   = ' num2str(ErrorRate * 100) ' %.'];
+        disp(DisplayString);
+    end
 end
 
