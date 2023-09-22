@@ -37,17 +37,18 @@ function [ErrorRate, ErrorNum, TotalNum, ErrorPos] = ProbeBitError(DataTx, DataR
 %   of the project.
     
     if(size(DataTx.Signal) == size(DataRx.Signal))
-        ErrorPos = find(DataTx.Signal ~= DataRx.Signal);
+        ErrorNum = sum(DataTx.Signal ~= DataRx.Signal, "all");
         [BitChannel, BitLength] = size(DataTx.Signal);
         TotalNum = BitChannel * BitLength;
-        ErrorNum = size(ErrorPos , 1);
         ErrorRate = ErrorNum / TotalNum;
+        ErrorPos = find(DataTx.Signal ~= DataRx.Signal);
     else
         % Bit stream with different size
         [BitChannel, BitLength] = size(DataTx.Signal);
         TotalNum = BitChannel * BitLength;
         ErrorNum = TotalNum;
         ErrorRate = TotalNum / TotalNum;
+        ErrorPos = [1 : TotalNum];
     end
     if(exist('Title','var'))
         DisplayString = [Title '_TotalBitNum = ' num2str(TotalNum) ' bits.'];

@@ -55,17 +55,19 @@ function [] = ProbeConstellation(Signal, SeparateDisplay, ConstellationMap, Titl
     [VoltageUnit, VoltageFactor] = UnitConvert(MaxScale, 'V');
     if (~SeparateDisplay)
         nexttile;
-        plot(ConstellationMap,'+','Markersize',30,'color','red','LineWidth',3);
+        % Force convert to complex number to avoid the unpredictable plot 
+        % error.
+        plot(complex(ConstellationMap),'+','Markersize',30,'color','red','LineWidth',3);
     end
     for index = 1 : Signal.ChannelNum
         if (SeparateDisplay)
             nexttile;
-            plot(ConstellationMap,'+','Markersize',30,'color','red','LineWidth',3);
+            plot(complex(ConstellationMap),'+','Markersize',30,'color','red','LineWidth',3);
             hold on;
         else
             hold on;
         end
-        plot(Signal.Signal(index, :) * Signal.ReferenceVoltage,'.');
+        plot(complex(Signal.Signal(index, :) * Signal.ReferenceVoltage),'.');
         xlim([-(MaxScale * 1.1 * VoltageFactor) (MaxScale * 1.1 * VoltageFactor)]);
         ylim([-(MaxScale * 1.1 * VoltageFactor) (MaxScale * 1.1 * VoltageFactor)]);
     end

@@ -71,8 +71,8 @@ function [] = ProbeSpectrum(Signal, SeparateDisplay, Title, varargin)
                 FFTStopFrequency = (FFTSpanStop - 1) / FFTSize * FFTBand;
                 FFTSpanFrequency = FFTSpan / FFTSize * FFTBand;
             else
-                FFTSpanStart = round(InPar.Results.Span(1) / Signal.SampleRate * FFTSize);
-                FFTSpanStop = round(InPar.Results.Span(2) / Signal.SampleRate * FFTSize);
+                FFTSpanStart = round(InPar.Results.Span(1) / Signal.SampleRate * SignalSize);
+                FFTSpanStop = round(InPar.Results.Span(2) / Signal.SampleRate * SignalSize);
                 FFTSpan = FFTSpanStop - FFTSpanStart;
                 FFTStartFrequency = (FFTSpanStart - 1) / FFTSize * FFTBand;
                 FFTStopFrequency = (FFTSpanStop - 1) / FFTSize * FFTBand;
@@ -102,6 +102,7 @@ function [] = ProbeSpectrum(Signal, SeparateDisplay, Title, varargin)
             plot(Horizon, pow2db(FFTConvertFiltered));
             xlim([(FFTStartFrequency * FrequencyFactor) (FFTStopFrequency * FrequencyFactor)]);
             xlabel(TiledFigure, FrequencyUnit);
+            ylabel(TiledFigure, 'dBW');
         end
     else
         nexttile;
@@ -152,8 +153,8 @@ function [] = ProbeSpectrum(Signal, SeparateDisplay, Title, varargin)
             FFTStopFrequency = FFTSpanStop / FFTSize * FFTBand;
             FFTSpanFrequency = FFTSpan / FFTSize * FFTBand;
         else
-            FFTSpanStart = round(InPar.Results.Span(1) / Signal.SampleRate * FFTSize);
-            FFTSpanStop = round(InPar.Results.Span(2) / Signal.SampleRate * FFTSize);
+            FFTSpanStart = round(InPar.Results.Span(1) / Signal.SampleRate * SignalSize);
+            FFTSpanStop = round(InPar.Results.Span(2) / Signal.SampleRate * SignalSize);
             FFTSpan = FFTSpanStop - FFTSpanStart;
             FFTStartFrequency = (FFTSpanStart - 1) / FFTSize * FFTBand;
             FFTStopFrequency = (FFTSpanStop - 1) / FFTSize * FFTBand;
@@ -192,7 +193,7 @@ function [] = ProbeSpectrum(Signal, SeparateDisplay, Title, varargin)
         end
         xlim([(FFTStartFrequency * FrequencyFactor) (FFTStopFrequency * FrequencyFactor)]);
         xlabel(TiledFigure, FrequencyUnit);
-        xlabel(TiledFigure, FrequencyUnit);
+        ylabel(TiledFigure, 'dBW');
     end
     if (exist('Title', 'var'))
         title(TiledFigure, Title);
