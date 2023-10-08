@@ -10,7 +10,7 @@ LoadEnvironment;
 %% Simulation config
 DataLegth = 800;
 ChannelNum = 8;
-ChannelNoise = -100;
+ChannelNoise = -200;
 FramePreambleLength = 67;
 SequenceMode = "prbs31";
 AnalogSignalPreset = "50Ohm-2.5V";
@@ -27,6 +27,7 @@ MaxSimulationFrequency = CarrierFrequency * 5;
 %MaxChannelImpulseEndurance = 12 / (pi * MaxSimulationFrequency);
 
 %% Simulation Flow
+close all;
 BaseData = DigitalSignalGen(ChannelNum, DataLegth, BaseBitRate, SequenceMode, DigitalSignalPreset);
 IQBase = Modulation(BaseData, BaseModulationMode, AnalogSignalPreset);
 ProbeConstellation(IQBase, false, BaseModulationMode,'Transmitted IQ Base');
@@ -35,28 +36,28 @@ FramePreamble = PreambleGen(ChannelNum, FramePreambleLength, IQBase.SampleRate, 
 FrameSignal = FrameEncapsulate(OrthogonalBase, FramePreamble);
 ShapingFilter = ShapingFilterDesign(BaseShapingBeta, BaseShapingSpan, BaseAnalogSampleRate, IQBase.SampleRate);
 ShapedSignal = ChannelShaping(FrameSignal, ShapingFilter, BaseAnalogSampleRate);
-ProbeSpectrum(ShapedSignal, false, 'Shaped Signal');
+ProbeSpectrum(ShapedSignal, false, 'Shaped Signal Spectrum');
 CarrierSignal = CarrierGen(CarrierFrequency, ChannelNum, CarrierSampleRate, ShapedSignal.TimeStart, ShapedSignal.TimeEndurance, AnalogSignalPreset);
-ProbeSpectrum(CarrierSignal, false, 'Carrier Signal');
+ProbeSpectrum(CarrierSignal, false, 'Carrier Signal Spectrum', 'Span', [5.75e9 5.85e9]);
 TransmiteSignal = IQMixing(ShapedSignal, CarrierSignal);
 ProbeWave(TransmiteSignal, true, 'Transmitted Signal');
-ProbeSpectrum(TransmiteSignal, false, 'Transmitted Signal');
+ProbeSpectrum(TransmiteSignal, false, 'Transmitted Spectrum');
 TxPower = ProbeSignalPower(TransmiteSignal, 'TxPower');
 
 %ChannelImpulse = InitChannelImpulseResponse(ChannelNum, ChannelNum, 0, MaxChannelImpulseEndurance, CarrierSampleRate, 0, MaxSimulationFrequency, 'Gaussian');
-ChannelImpulse = IdealOAMChannel(ChannelNum, ChannelNum, 0.2, 0.2, [0; 0; 10], [0; 0; 0], MaxSimulationFrequency, CarrierSampleRate, true);
+ChannelImpulse = IdealOAMChannel(ChannelNum, ChannelNum, 0.2, 0.2, [0; 0; 10], [0; 0; 0], MaxSimulationFrequency, CarrierFrequency, CarrierSampleRate, true);
 ProbeChannelImpulse(ChannelImpulse);
 RecivedSignal = Channel(TransmiteSignal, ChannelImpulse, ChannelNoise);
- 
+
 ProbeWave(RecivedSignal, true, 'Recived Signal');
-ProbeSpectrum(RecivedSignal, false, 'Recived Signal');
+ProbeSpectrum(RecivedSignal, false, 'Recived Spectrum', 'Span', [5.6e9 6.0e9]);
 RxPower = ProbeSignalPower(RecivedSignal, 'RxPower');
 CarrierSignal = CarrierGen(CarrierFrequency, ChannelNum, CarrierSampleRate, RecivedSignal.TimeStart, RecivedSignal.TimeEndurance, AnalogSignalPreset);
 BaseSignal = IQDemixing(RecivedSignal, CarrierSignal, BaseAnalogSampleRate, @DemixingResampleFilter);
 [PayloadSiganl, ChannelEstimation] = FrameDecapsulate(BaseSignal, FramePreamble, ShapingFilter);
 DeorthogonalBase = OrthogonalMatrixUnload(PayloadSiganl, BaseOrthogonalPreset);
 ProbeConstellation(DeorthogonalBase, false, BaseModulationMode, 'Recived IQ Base');
-ProbeSpectrum(DeorthogonalBase, false, 'Recived IQ Base');
+ProbeSpectrum(DeorthogonalBase, false, 'Recived IQ Base Spectrum');
 SymbolSignal = BaseSymbolSample(DeorthogonalBase, IQBase.SampleRate);
 ProbeConstellation(SymbolSignal, false, BaseModulationMode, 'Decoded IQ Base');
 RecivedData = Demodulation(SymbolSignal, BaseModulationMode, DigitalSignalPreset);

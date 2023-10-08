@@ -29,13 +29,13 @@ function [Filter] = DemixingResampleFilter(RFSampleRate, BaseSampleRate)
         RFSa = RFSampleRate;
         BaseSa = BaseSampleRate;
         FilterFactor = BaseSampleRate / RFSampleRate;
-        if(FilterFactor < 0.005)
+        if(FilterFactor < 0.001)
             % When the baseband sample rate is significantly below the RF 
             % sample rate, designing a high-performance filter becomes 
             % challenging. Therefore, it is advisable to establish a limit 
             % for the filter factor to mitigate potential degradation in 
             % performance under these circumstances.
-            FilterFactor = 0.005;
+            FilterFactor = 0.001;
         end
         [N, Fo, Ao, W] = firpmord([FilterFactor, FilterFactor * 2], [1 0], [0.05, 1e-05]);
         DesignedFilter = firpm(N, Fo, Ao, W, {20});
