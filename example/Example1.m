@@ -10,7 +10,7 @@ LoadEnvironment;
 %% Simulation config
 DataLegth = 800;
 ChannelNum = 8;
-ChannelNoise = -200;
+ChannelNoise = -150;
 FramePreambleLength = 67;
 SequenceMode = "prbs31";
 AnalogSignalPreset = "50Ohm-2.5V";
@@ -25,6 +25,11 @@ CarrierFrequency = 5.8e9;
 CarrierSampleRate = 1000e9;
 MaxSimulationFrequency = CarrierFrequency * 5;
 %MaxChannelImpulseEndurance = 12 / (pi * MaxSimulationFrequency);
+AntennaRadiusTx = 0.5;
+AntennaRadiusRx = 0.5;
+AntennaPositionRx = [0; 0; 10];
+AntennaEulerianAngleRx = [0; 0; 0];
+BeamDisplayRange = 'Auto';
 
 %% Simulation Flow
 close all;
@@ -45,7 +50,8 @@ ProbeSpectrum(TransmiteSignal, false, 'Transmitted Spectrum');
 TxPower = ProbeSignalPower(TransmiteSignal, 'TxPower');
 
 %ChannelImpulse = InitChannelImpulseResponse(ChannelNum, ChannelNum, 0, MaxChannelImpulseEndurance, CarrierSampleRate, 0, MaxSimulationFrequency, 'Gaussian');
-ChannelImpulse = IdealOAMChannel(ChannelNum, ChannelNum, 0.2, 0.2, [0; 0; 10], [0; 0; 0], MaxSimulationFrequency, CarrierFrequency, CarrierSampleRate, true);
+ChannelImpulse = IdealOAMChannel(ChannelNum, ChannelNum, AntennaRadiusTx, AntennaRadiusRx, AntennaPositionRx, AntennaEulerianAngleRx, MaxSimulationFrequency, CarrierFrequency, CarrierSampleRate, true);
+IdealOAMVisualizer(ChannelNum, ChannelNum, AntennaRadiusTx, AntennaRadiusRx, AntennaPositionRx, AntennaEulerianAngleRx, CarrierFrequency, 1, true, BeamDisplayRange);
 ProbeChannelImpulse(ChannelImpulse);
 RecivedSignal = Channel(TransmiteSignal, ChannelImpulse, ChannelNoise);
 
