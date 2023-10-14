@@ -38,7 +38,7 @@ function [BaseSignal, ChannelEstimation] = FrameDecapsulate(FrameSignal, Preambl
     if (PreambleSignal.SampleRate < FrameSignal.SampleRate)
         % If the sample rate of the preamble signal is slower than the
         % baseband signal, the preamble should be first upsampled.
-        Preamble = SignalResample(PreambleSignal, FrameSignal.SampleRate, 'previous');
+        Preamble = SignalResample(PreambleSignal, FrameSignal.SampleRate, 'zero');
     elseif (PreambleSignal.SampleRate > FrameSignal.SampleRate)
         Preamble = PreambleSignal;
         warning("Preamble cannot sample faster than base, ignore the sample rate.");
@@ -54,19 +54,21 @@ function [BaseSignal, ChannelEstimation] = FrameDecapsulate(FrameSignal, Preambl
             PreambleCorrelation(index, indextx, :) = conv(ShapedSignal(index, :), conj(flip(Preamble.Signal(indextx, :))));
         end
     end
-    [CorrelationMax, CorrelationMaxIndex] = max(PreambleCorrelation, [],3);
+    [CorrelationMax, CorrelationMaxIndex] = max(PreambleCorrelation, [], 3);
     CorrelationRange = max(abs(CorrelationMax), [],'all');
     % Find the highest level of correlation, and then judge the
     % availability of every other correlation based on it.
-    PayloadStart = round(mean(CorrelationMaxIndex(abs(CorrelationMax) > (CorrelationRange / 2)), 'all')) + 1;
+    DownSampleRate = FrameSignal.SampleRate / PreambleSignal.SampleRate;
+    PayloadStart = round(mode(CorrelationMaxIndex(abs(CorrelationMax) > (CorrelationRange * 0.5)), 'all')) - round(DownSampleRate / 2) + 1;
     % The payload start time can be found using the correlation.
     EstimationSeq = zeros(ChannelNum, size(PreambleSignal.Signal, 2));
-    DownSampleRate = FrameSignal.SampleRate / PreambleSignal.SampleRate;
     for index = 1 : ChannelNum
-        EstimationSeqRow = downsample(flip(ShapedSignal(index,1 : PayloadStart), 2), DownSampleRate, round(DownSampleRate / 2));
+        EstimationStart = PayloadStart - size(Preamble.Signal, 2) - 1;
+        EstimationStop = PayloadStart - 1;
+        EstimationSeqRow = downsample(ShapedSignal(index, EstimationStart : EstimationStop), DownSampleRate, round(DownSampleRate / 2));
         % To estimate the channel, the received preamble should be first
         % downsampled to the same sample rate as the sent preamble.
-        EstimationSeq(index, :) = flip(EstimationSeqRow(1 : size(PreambleSignal.Signal, 2)));
+        EstimationSeq(index, :) = EstimationSeqRow(1 : size(PreambleSignal.Signal, 2));
         % Remove the meaningless symbol before the preamble.
     end
     ChannelEstimation = EstimationSeq * pinv(PreambleSignal.Signal);

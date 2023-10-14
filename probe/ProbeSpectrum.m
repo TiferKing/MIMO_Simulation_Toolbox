@@ -101,7 +101,7 @@ function [] = ProbeSpectrum(Signal, SeparateDisplay, Title, varargin)
             nexttile;
             plot(Horizon, pow2db(FFTConvertFiltered));
             xlim([(FFTStartFrequency * FrequencyFactor) (FFTStopFrequency * FrequencyFactor)]);
-            xlabel(TiledFigure, FrequencyUnit);
+            xlabel(TiledFigure, [FrequencyUnit ' (RBW = ' num2str(FFTRBWFrequency * FrequencyFactor) FrequencyUnit ')']);
             ylabel(TiledFigure, 'dBW');
         end
     else
@@ -192,7 +192,7 @@ function [] = ProbeSpectrum(Signal, SeparateDisplay, Title, varargin)
             plot(Horizon, pow2db(FFTConvertFiltered(index,:)));
         end
         xlim([(FFTStartFrequency * FrequencyFactor) (FFTStopFrequency * FrequencyFactor)]);
-        xlabel(TiledFigure, FrequencyUnit);
+        xlabel(TiledFigure, [FrequencyUnit ' (RBW = ' num2str(FFTRBWFrequency * FrequencyFactor) FrequencyUnit ')']);
         ylabel(TiledFigure, 'dBW');
     end
     if (exist('Title', 'var'))

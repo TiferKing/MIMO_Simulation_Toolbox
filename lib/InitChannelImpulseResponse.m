@@ -67,13 +67,14 @@ function [ChannelImpulseResponse] = InitChannelImpulseResponse(varargin)
     parse(InPar,varargin{:});
     
     ChannelImpulseResponse = struct;
+    ChannelLength = round(InPar.Results.TimeEndurance * InPar.Results.SampleRate);
     ChannelImpulseResponse.ChannelInputNum = InPar.Results.InputChannel;
     ChannelImpulseResponse.ChannelOutputNum = InPar.Results.OutputChannel;
     ChannelImpulseResponse.TimeStart = InPar.Results.TimeStart;
-    ChannelImpulseResponse.TimeEndurance = InPar.Results.TimeEndurance;
+    ChannelImpulseResponse.TimeEndurance = ChannelLength * (1 / InPar.Results.SampleRate);
     ChannelImpulseResponse.SampleRate = InPar.Results.SampleRate;
     ChannelImpulseResponse.AttenuationdB = InPar.Results.AttenuationdB;
-    ChannelLength = round(InPar.Results.TimeEndurance * InPar.Results.SampleRate);
+    
     if(ChannelLength == 0)
         ChannelLength = 1;
     end

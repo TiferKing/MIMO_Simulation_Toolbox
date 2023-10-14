@@ -105,11 +105,12 @@ function [DigitalSignal] = InitDigitalSignal(varargin)
     parse(InPar,varargin{:});
     
     DigitalSignal = struct;
+    SignalLength = round(InPar.Results.TimeEndurance * InPar.Results.ClockFrequency);
     DigitalSignal.ChannelNum = InPar.Results.Channel;
     DigitalSignal.TimeStart = InPar.Results.TimeStart;
-    DigitalSignal.TimeEndurance = InPar.Results.TimeEndurance;
+    DigitalSignal.TimeEndurance = SignalLength * (1 / InPar.Results.ClockFrequency);
     DigitalSignal.ClockFrequency = InPar.Results.ClockFrequency;
-    DigitalSignal.Signal = zeros(InPar.Results.Channel, round(InPar.Results.TimeEndurance * InPar.Results.ClockFrequency));
+    DigitalSignal.Signal = zeros(InPar.Results.Channel, SignalLength);
     
     if(strcmp(InPar.Results.ReferencePreset, "CMOS"))
         DigitalSignal.SignalNeg = [];

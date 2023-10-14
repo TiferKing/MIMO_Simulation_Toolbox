@@ -39,7 +39,7 @@ function [OrthogonalSignal] = OrthogonalMatrixLoad(IQSignal, varargin)
     parse(InPar,varargin{:});
     
     if(strcmp(InPar.Results.MatrixPreset, "OAM"))
-        OrthogonalMatrix = dftmtx(IQSignal.ChannelNum)' / IQSignal.ChannelNum;
+        OrthogonalMatrix = dftmtx(IQSignal.ChannelNum)' / IQSignal.ChannelNum * sqrt(IQSignal.ChannelNum);
     elseif(strcmp(InPar.Results.MatrixPreset, "ZC"))
         N = IQSignal.ChannelNum;
         u = 1;

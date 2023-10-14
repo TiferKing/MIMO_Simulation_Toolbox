@@ -74,11 +74,12 @@ function [AnalogSignal] = InitAnalogSignal(varargin)
     parse(InPar,varargin{:});
     
     AnalogSignal = struct;
+    SignalLength = round(InPar.Results.TimeEndurance * InPar.Results.SampleRate);
     AnalogSignal.ChannelNum = InPar.Results.Channel;
     AnalogSignal.TimeStart = InPar.Results.TimeStart;
-    AnalogSignal.TimeEndurance = InPar.Results.TimeEndurance;
+    AnalogSignal.TimeEndurance = SignalLength * (1 / InPar.Results.SampleRate);
     AnalogSignal.SampleRate = InPar.Results.SampleRate;
-    AnalogSignal.Signal = zeros(InPar.Results.Channel, round(InPar.Results.TimeEndurance * InPar.Results.SampleRate));
+    AnalogSignal.Signal = zeros(InPar.Results.Channel, SignalLength);
     
     if(strcmp(InPar.Results.ReferencePreset, "50Ohm-2.5V"))
         AnalogSignal.ReferenceVoltage = 2.5;

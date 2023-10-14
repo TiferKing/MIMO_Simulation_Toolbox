@@ -32,5 +32,11 @@ function [OutputSignal] = ChannelConvolution(InputSignal, InputChannel)
         OutputSignal = OutputSignal + InputChannel(:, :, indextime) * InputSignal;
         InputSignal = circshift(InputSignal,1,2);
     end
+
+    %OutputSignal = pagemtimes(InputChannel, InputSignal);
+    %for indextime = 1 : ChannelLength
+        %OutputSignal(:, :, indextime) = circshift(OutputSignal(:, :, indextime), indextime - 1,2);
+    %end
+    %OutputSignal = sum(OutputSignal, 3);
 end
 

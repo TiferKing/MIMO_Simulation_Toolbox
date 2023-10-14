@@ -34,21 +34,21 @@ function [DigitalSignal] = Demodulation(IQSignal, Mode, SignalPreset)
 
     ChannelNum = IQSignal.ChannelNum;
     TimeStart = IQSignal.TimeStart;
-    TimEndurance = IQSignal.TimeEndurance;
+    TimeEndurance = IQSignal.TimeEndurance;
     SampleRate = IQSignal.SampleRate;
     SignalLength = size(IQSignal.Signal, 2);
     if(strcmp(Mode, "ASK"))
-        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimEndurance, SampleRate, SignalPreset);
+        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimeEndurance, SampleRate, SignalPreset);
         DigitalSignal.Signal = double(real(IQSignal.Signal) > 0.5);
     elseif(strcmp(Mode, "BPSK"))
-        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimEndurance, SampleRate, SignalPreset);
+        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimeEndurance, SampleRate, SignalPreset);
         DigitalSignal.Signal = double(real(IQSignal.Signal) > 0);
     elseif (strcmp(Mode, "QPSK"))
         BitStream = zeros(2, SignalLength, ChannelNum);
         IQStream = reshape(IQSignal.Signal.', 1, SignalLength, []);
         BitStream(1,:,:) = double(real(IQStream) > 0);
         BitStream(2,:,:) = double(imag(IQStream) > 0);
-        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimEndurance, SampleRate * 2, SignalPreset);
+        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimeEndurance, SampleRate * 2, SignalPreset);
         BitStream = reshape(BitStream, 1, [], ChannelNum);
         DigitalSignal.Signal = reshape(BitStream, [], ChannelNum)';
     elseif (strcmp(Mode, "16QAM"))
@@ -59,7 +59,7 @@ function [DigitalSignal] = Demodulation(IQSignal, Mode, SignalPreset)
         IQStream = IQStream - ((BitStream(1,:,:) * 2 - 1) + (BitStream(3,:,:) * 2 - 1) * 1i);
         BitStream(2,:,:) = double(real(IQStream) > 0);
         BitStream(4,:,:) = double(imag(IQStream) > 0);
-        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimEndurance, SampleRate * 4, SignalPreset);
+        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimeEndurance, SampleRate * 4, SignalPreset);
         BitStream = reshape(BitStream, 1, [], ChannelNum);
         DigitalSignal.Signal = reshape(BitStream, [], ChannelNum)';
     elseif (strcmp(Mode, "64QAM"))
@@ -73,7 +73,7 @@ function [DigitalSignal] = Demodulation(IQSignal, Mode, SignalPreset)
         IQStream = IQStream - ((BitStream(2,:,:) * 2 - 1) + (BitStream(5,:,:) * 2 - 1) * 1i);
         BitStream(3,:,:) = double(real(IQStream) > 0);
         BitStream(6,:,:) = double(imag(IQStream) > 0);
-        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimEndurance, SampleRate * 6, SignalPreset);
+        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimeEndurance, SampleRate * 6, SignalPreset);
         BitStream = reshape(BitStream, 1, [], ChannelNum);
         DigitalSignal.Signal = reshape(BitStream, [], ChannelNum)';
     elseif (strcmp(Mode, "256QAM"))
@@ -90,7 +90,7 @@ function [DigitalSignal] = Demodulation(IQSignal, Mode, SignalPreset)
         IQStream = IQStream - ((BitStream(3,:,:) * 2 - 1) + (BitStream(7,:,:) * 2 - 1) * 1i);
         BitStream(4,:,:) = double(real(IQStream) > 0);
         BitStream(8,:,:) = double(imag(IQStream) > 0);
-        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimEndurance, SampleRate * 8, SignalPreset);
+        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimeEndurance, SampleRate * 8, SignalPreset);
         BitStream = reshape(BitStream, 1, [], ChannelNum);
         DigitalSignal.Signal = reshape(BitStream, [], ChannelNum)';
     elseif (strcmp(Mode, "1024QAM"))
@@ -110,7 +110,7 @@ function [DigitalSignal] = Demodulation(IQSignal, Mode, SignalPreset)
         IQStream = IQStream - ((BitStream(4,:,:) * 2 - 1) + (BitStream(9,:,:) * 2 - 1) * 1i);
         BitStream(5,:,:) = double(real(IQStream) > 0);
         BitStream(10,:,:) = double(imag(IQStream) > 0);
-        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimEndurance, SampleRate * 10, SignalPreset);
+        DigitalSignal = InitDigitalSignal(ChannelNum, TimeStart, TimeEndurance, SampleRate * 10, SignalPreset);
         BitStream = reshape(BitStream, 1, [], ChannelNum);
         DigitalSignal.Signal = reshape(BitStream, [], ChannelNum)';
     end

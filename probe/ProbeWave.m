@@ -1,6 +1,6 @@
 function [] = ProbeWave(Signal, SeparateDisplay, Title)
     figure('units','normalized','outerposition',[0 0 1 1]);
-    TiledFigure = tiledlayout(Signal.ChannelNum,1);
+    TiledFigure = tiledlayout("vertical");
     if (~exist('SeparateDisplay', 'var'))
         SeparateDisplay = false;
     end
@@ -11,6 +11,9 @@ function [] = ProbeWave(Signal, SeparateDisplay, Title)
     MaxVoltage = max(abs(Signal.Signal),[],"all") * Signal.ReferenceVoltage;
     [VoltageUnit, VoltageFactor] = UnitConvert(MaxVoltage, 'V');
     [StartTimeUnit, StartTimeFactor] = UnitConvert(Signal.TimeStart, 's');
+    if (~SeparateDisplay)
+        nexttile;
+    end
     for index = 1 : Signal.ChannelNum;
         if (SeparateDisplay)
             nexttile;

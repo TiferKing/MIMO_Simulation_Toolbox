@@ -38,7 +38,7 @@ function [OrthogonalSignal] = OrthogonalMatrixUnload(IQSignal, varargin)
     parse(InPar,varargin{:});
     
     if(strcmp(InPar.Results.MatrixPreset, "OAM"))
-        OrthogonalMatrix = dftmtx(IQSignal.ChannelNum);
+        OrthogonalMatrix = dftmtx(IQSignal.ChannelNum) / sqrt(IQSignal.ChannelNum);
     elseif(strcmp(InPar.Results.MatrixPreset, "Custom"))
         OrthogonalMatrix = InPar.Results.OrthogonalMatrix;
     end

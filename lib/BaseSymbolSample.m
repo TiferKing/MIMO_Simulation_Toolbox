@@ -24,11 +24,11 @@ function [SymbolSignal] = BaseSymbolSample(BaseSignal, SymbolSampleRate)
 
     ChannelNum = BaseSignal.ChannelNum;
     TimeStart = BaseSignal.TimeStart;
-    TimeEndurance = round(BaseSignal.TimeEndurance * SymbolSampleRate) / SymbolSampleRate;
+    TimeEndurance = floor(BaseSignal.TimeEndurance * SymbolSampleRate) / SymbolSampleRate;
     DownSampleRate = BaseSignal.SampleRate / SymbolSampleRate;
     SymbolSignal = InitAnalogSignal(BaseSignal.ChannelNum, TimeStart, TimeEndurance, SymbolSampleRate, 'Template', 'As', BaseSignal);
     for index = 1 : ChannelNum
-        SymbolSignal.Signal(index, :) = downsample(BaseSignal.Signal(index,:), DownSampleRate, round(DownSampleRate / 2) - 1);
+        SymbolSignal.Signal(index, :) = downsample(BaseSignal.Signal(index,:), DownSampleRate, round(DownSampleRate / 2));
     end
 end
 

@@ -35,7 +35,6 @@ function [ShapedSignal] = ChannelShaping(IQSignal, Filter, SampleRate)
    % Upfirdn may cause the last sample point to be not upsampled, so it
    % should add an additional zero at the end of the sample to make sure
    % the signal is correct.
-   ShapedSignal.TimeStart = ShapedSignal.TimeStart / SampleRate;
    ShapedSignal.TimeEndurance = (SignalLength) / SampleRate;
 end
 

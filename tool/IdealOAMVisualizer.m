@@ -34,9 +34,9 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     end
 
     % XZ Plane calculate
-    XSize = floor(DisplayRange(1,1) / DisplayRange(1,2) * 2) + 1;
-    YSize = floor(DisplayRange(2,1) / DisplayRange(2,2) * 2) + 1;
-    ZSize = floor(DisplayRange(3,1) / DisplayRange(3,2)) + 1;
+    XSize = round(DisplayRange(1,1) / DisplayRange(1,2) * 2) + 1;
+    YSize = round(DisplayRange(2,1) / DisplayRange(2,2) * 2) + 1;
+    ZSize = round(DisplayRange(3,1) / DisplayRange(3,2)) + 1;
     XRange = [-DisplayRange(1,1) : DisplayRange(1,2) : DisplayRange(1,1)];
     YRange = [-DisplayRange(2,1) : DisplayRange(2,2) : DisplayRange(2,1)];
     ZRange = [0 : DisplayRange(3,2) : DisplayRange(3,1)];
@@ -125,7 +125,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     MaxDistance = max(Distance, [], 'all');
     DisplayAttenuationRange = pow2db((Lambada / (4 * pi * MaxDistance)) ^ 2) - 10;
 
-    figure;
+    figure('units','normalized','outerposition',[0 0 1 1]);
     TiledFigure = tiledlayout("flow");
     % XZ Plane Display
     nexttile;
