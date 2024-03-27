@@ -16,6 +16,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     RxAntennaPos = TransformMatrixAngle * RxAntennaPos;
 
     Lambada = physconst('LightSpeed') * (1 / Frequency);
+    SpinMode = 0;
 
     if (~exist('DisplayRange', 'var'))
         DisplayRange = 'Auto';
@@ -51,11 +52,13 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     end
 
     XZPlaneDistance = ((XZPlaneDistance < Lambada) .* Lambada) + ((XZPlaneDistance >= Lambada) .* XZPlaneDistance);
-    XZAttenuation = (Lambada ./ (4 .* pi .* XZPlaneDistance)) .^ 2;
+    XZAttenuation = Lambada ./ (4 .* pi .* XZPlaneDistance);
     XZPhase = exp(XZPlaneDistance ./ Lambada .* 2 .* pi .* 1i);
-    XZReceive = zeros(XSize, ZSize, TxChannelNum);
+    XZReceiveV = zeros(XSize, ZSize, TxChannelNum);
+    XZReceiveH = zeros(XSize, ZSize, TxChannelNum);
     for index = 1 : TxChannelNum
-        XZReceive(:, :, index) = XZAttenuation(:, :, index) .* XZPhase(:, :, index) .* exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* OAMMode);
+        XZReceiveV(:, :, index) = XZAttenuation(:, :, index) .* XZPhase(:, :, index) .* exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* OAMMode) .* real(exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* SpinMode));
+        XZReceiveH(:, :, index) = XZAttenuation(:, :, index) .* XZPhase(:, :, index) .* exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* OAMMode) .* imag(exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* SpinMode));
     end
 
     % YZ Plane calculate
@@ -70,11 +73,13 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     end
 
     YZPlaneDistance = ((YZPlaneDistance < Lambada) .* Lambada) + ((YZPlaneDistance >= Lambada) .* YZPlaneDistance);
-    YZAttenuation = (Lambada ./ (4 .* pi .* YZPlaneDistance)) .^ 2;
+    YZAttenuation = Lambada ./ (4 .* pi .* YZPlaneDistance);
     YZPhase = exp(YZPlaneDistance ./ Lambada .* 2 .* pi .* 1i);
-    YZReceive = zeros(YSize, ZSize, TxChannelNum);
+    YZReceiveV = zeros(YSize, ZSize, TxChannelNum);
+    YZReceiveH = zeros(YSize, ZSize, TxChannelNum);
     for index = 1 : TxChannelNum
-        YZReceive(:, :, index) = YZAttenuation(:, :, index) .* YZPhase(:, :, index) .* exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* OAMMode);
+        YZReceiveV(:, :, index) = YZAttenuation(:, :, index) .* YZPhase(:, :, index) .* exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* OAMMode) .* real(exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* SpinMode));
+        YZReceiveH(:, :, index) = YZAttenuation(:, :, index) .* YZPhase(:, :, index) .* exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* OAMMode) .* imag(exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* SpinMode));
     end
     
     % XY Plane calculate
@@ -89,11 +94,13 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     end
 
     XYPlaneDistance = ((XYPlaneDistance < Lambada) .* Lambada) + ((XYPlaneDistance >= Lambada) .* XYPlaneDistance);
-    XYAttenuation = (Lambada ./ (4 .* pi .* XYPlaneDistance)) .^ 2;
+    XYAttenuation = Lambada ./ (4 .* pi .* XYPlaneDistance);
     XYPhase = exp(XYPlaneDistance ./ Lambada .* 2 .* pi .* 1i);
-    XYReceive = zeros(XSize, YSize, TxChannelNum);
+    XYReceiveV = zeros(XSize, YSize, TxChannelNum);
+    XYReceiveH = zeros(XSize, YSize, TxChannelNum);
     for index = 1 : TxChannelNum
-        XYReceive(:, :, index) = XYAttenuation(:, :, index) .* XYPhase(:, :, index) .* exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* OAMMode);
+        XYReceiveV(:, :, index) = XYAttenuation(:, :, index) .* XYPhase(:, :, index) .* exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* OAMMode) .* real(exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* SpinMode));
+        XYReceiveH(:, :, index) = XYAttenuation(:, :, index) .* XYPhase(:, :, index) .* exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* OAMMode) .* imag(exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* SpinMode));
     end
 
     % Recv Plane calculate
@@ -110,11 +117,13 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     end
 
     RecvPlaneDistance = ((RecvPlaneDistance < Lambada) .* Lambada) + ((RecvPlaneDistance >= Lambada) .* RecvPlaneDistance);
-    RecvAttenuation = (Lambada ./ (4 .* pi .* RecvPlaneDistance)) .^ 2;
+    RecvAttenuation = Lambada ./ (4 .* pi .* RecvPlaneDistance);
     RecvPhase = exp(RecvPlaneDistance ./ Lambada .* 2 .* pi .* 1i);
-    RecvReceive = zeros(XSize, YSize, TxChannelNum);
+    RecvReceiveV = zeros(XSize, YSize, TxChannelNum);
+    RecvReceiveH = zeros(XSize, YSize, TxChannelNum);
     for index = 1 : TxChannelNum
-        RecvReceive(:, :, index) = RecvAttenuation(:, :, index) .* RecvPhase(:, :, index) .* exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* OAMMode);
+        RecvReceiveV(:, :, index) = RecvAttenuation(:, :, index) .* RecvPhase(:, :, index) .* exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* OAMMode) .* real(exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* SpinMode));
+        RecvReceiveH(:, :, index) = RecvAttenuation(:, :, index) .* RecvPhase(:, :, index) .* exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* OAMMode) .* imag(exp(2 .* pi .* 1i .* (index - 1) ./ TxChannelNum .* SpinMode));
     end
 
     Distance = zeros(RxChannelNum, TxChannelNum);
@@ -129,7 +138,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     TiledFigure = tiledlayout("flow");
     % XZ Plane Display
     nexttile;
-    surf(XRange, ZRange, pow2db(abs(sum(XZReceive,3)))');
+    surf(XRange, ZRange, pow2db(abs(sum(XZReceiveV,3) .^ 2))');
     shading interp;
     title('XZ Plane');
     view(0,90);
@@ -139,7 +148,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
 
     % YZ Plane Display
     nexttile;
-    surf(YRange, ZRange, pow2db(abs(sum(YZReceive,3)))');
+    surf(YRange, ZRange, pow2db(abs(sum(YZReceiveV,3) .^ 2))');
     shading interp;
     title('YZ Plane');
     view(0,90);
@@ -149,7 +158,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
 
     % XY Plane Display
     nexttile;
-    surf(XRange, YRange, pow2db(abs(sum(XYReceive,3)))');
+    surf(XRange, YRange, pow2db(abs(sum(XYReceiveV,3) .^ 2))');
     shading interp;
     title('XY Plane');
     view(0,90);
@@ -163,7 +172,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     daspect([1 1 1]);
 
     nexttile;
-    surf(XRange, YRange, angle(sum(XYReceive,3))');
+    surf(XRange, YRange, angle(sum(XYReceiveV,3) .^ 2)');
     shading interp;
     title('XY Phase');
     view(0,90);
@@ -177,7 +186,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
 
     % Recv Plane Display
     nexttile;
-    surf(XRange, YRange, pow2db(abs(sum(RecvReceive,3)))');
+    surf(XRange, YRange, pow2db(abs(sum(RecvReceiveV,3) .^ 2))');
     shading interp;
     title('Receiver Plane');
     view(0,90);
@@ -196,7 +205,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     daspect([1 1 1]);
 
     nexttile;
-    surf(XRange, YRange, angle(sum(RecvReceive,3))');
+    surf(XRange, YRange, angle(sum(RecvReceiveV,3) .^ 2)');
     shading interp;
     title('Receiver Phase');
     view(0,90);
@@ -210,6 +219,93 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
 
     xlabel(TiledFigure, 'meter');
     ylabel(TiledFigure, 'dBW');
-    title(TiledFigure, 'Ideal OAM Channel Visualizer');
+    title(TiledFigure, 'Ideal OAM Channel Visualizer-V');
+
+    figure('units','normalized','outerposition',[0 0 1 1]);
+    TiledFigure = tiledlayout("flow");
+    % XZ Plane Display
+    nexttile;
+    surf(XRange, ZRange, pow2db(abs(sum(XZReceiveH,3) .^ 2))');
+    shading interp;
+    title('XZ Plane');
+    view(0,90);
+    colorbar;
+    clim([DisplayAttenuationRange -20]);
+    daspect([1 1 1]);
+
+    % YZ Plane Display
+    nexttile;
+    surf(YRange, ZRange, pow2db(abs(sum(YZReceiveH,3) .^ 2))');
+    shading interp;
+    title('YZ Plane');
+    view(0,90);
+    colorbar;
+    clim([DisplayAttenuationRange -20]);
+    daspect([1 1 1]);
+
+    % XY Plane Display
+    nexttile;
+    surf(XRange, YRange, pow2db(abs(sum(XYReceiveH,3) .^ 2))');
+    shading interp;
+    title('XY Plane');
+    view(0,90);
+    colorbar;
+    clim([DisplayAttenuationRange -20]);
+    if(exist('AntennaDisplay','var') && AntennaDisplay)
+        hold on;
+        plot3([RxAntennaPos(1,:) RxAntennaPos(1,1)],[RxAntennaPos(2,:) RxAntennaPos(2,1)],[RxAntennaPos(3,:) RxAntennaPos(3,1)],'-o','Color','r','MarkerFaceColor','#D90000');
+        hold off;
+    end
+    daspect([1 1 1]);
+
+    nexttile;
+    surf(XRange, YRange, angle(sum(XYReceiveH,3) .^ 2)');
+    shading interp;
+    title('XY Phase');
+    view(0,90);
+    colorbar;
+    if(exist('AntennaDisplay','var') && AntennaDisplay)
+        hold on;
+        plot3([RxAntennaPos(1,:) RxAntennaPos(1,1)],[RxAntennaPos(2,:) RxAntennaPos(2,1)],[RxAntennaPos(3,:) RxAntennaPos(3,1)],'-o','Color','r','MarkerFaceColor','#D90000');
+        hold off;
+    end
+    daspect([1 1 1]);
+
+    % Recv Plane Display
+    nexttile;
+    surf(XRange, YRange, pow2db(abs(sum(RecvReceiveH,3) .^ 2))');
+    shading interp;
+    title('Receiver Plane');
+    view(0,90);
+    colorbar;
+    clim([DisplayAttenuationRange -20]);
+    if(exist('AntennaDisplay','var') && AntennaDisplay)
+        RxAntennaPosInit = zeros(4, RxChannelNum);
+        RxAntennaPosInit(1,:) = cos([0 : 1 / RxChannelNum : 1 - (1 / RxChannelNum)] * 2 * pi) * RxAntennaRadius;
+        RxAntennaPosInit(2,:) = sin([0 : 1 / RxChannelNum : 1 - (1 / RxChannelNum)] * 2 * pi) * RxAntennaRadius;
+        RxAntennaPosInit(3,:) = RxAntennaPosInit(3,:) + 4;
+        RxAntennaPosInit(4,:) = ones(1, RxChannelNum);
+        hold on;
+        plot3([RxAntennaPosInit(1,:) RxAntennaPosInit(1,1)],[RxAntennaPosInit(2,:) RxAntennaPosInit(2,1)],[RxAntennaPosInit(3,:) RxAntennaPosInit(3,1)],'-o','Color','r','MarkerFaceColor','#D90000');
+        hold off;
+    end
+    daspect([1 1 1]);
+
+    nexttile;
+    surf(XRange, YRange, angle(sum(RecvReceiveH,3) .^ 2)');
+    shading interp;
+    title('Receiver Phase');
+    view(0,90);
+    colorbar;
+    if(exist('AntennaDisplay','var') && AntennaDisplay)
+        hold on;
+        plot3([RxAntennaPosInit(1,:) RxAntennaPosInit(1,1)],[RxAntennaPosInit(2,:) RxAntennaPosInit(2,1)],[RxAntennaPosInit(3,:) RxAntennaPosInit(3,1)],'-o','Color','r','MarkerFaceColor','#D90000');
+        hold off;
+    end
+    daspect([1 1 1]);
+
+    xlabel(TiledFigure, 'meter');
+    ylabel(TiledFigure, 'dBW');
+    title(TiledFigure, 'Ideal OAM Channel Visualizer-H');
     drawnow;
 end

@@ -54,7 +54,7 @@ function [ChannelImpulseResponse] = IdealOAMChannel(TxChannelNum, RxChannelNum, 
     for indexRx = 1 : RxChannelNum
         for indexTx = 1 : TxChannelNum
             GaussianImpulse = exp(-(([1 : ChannelLength] .* (1 / SampleRate) - (6 * GaussianTau) - (Delay(indexRx, indexTx) - MinDelay)) .^ 2) ./ (GaussianTau .^ 2));
-            GaussianImpulse = ((MinDistance / Distance(indexRx, indexTx)) ^ 2) * (GaussianImpulse ./ sum(GaussianImpulse));
+            GaussianImpulse = (MinDistance / Distance(indexRx, indexTx)) * (GaussianImpulse ./ sum(GaussianImpulse));
             ChannelImpulseResponse.Signal(indexRx, indexTx, :) = GaussianImpulse;
         end
     end
