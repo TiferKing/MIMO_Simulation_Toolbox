@@ -15,7 +15,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     TransformMatrixAngle = [TransformEulerian RxPosition; 0 0 0 1];
     RxAntennaPos = TransformMatrixAngle * RxAntennaPos;
 
-    Lambada = physconst('LightSpeed') * (1 / Frequency);
+    Lambda = physconst('LightSpeed') * (1 / Frequency);
     SpinMode = 0;
 
     if (~exist('DisplayRange', 'var'))
@@ -25,9 +25,9 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
         if (strcmp(DisplayRange, 'Auto'))
             MaxRange = max([abs(TxAntennaPos) abs(RxAntennaPos)], [], 2);
             MinScale = min(MaxRange, [], "all");
-            if (MinScale < Lambada)
-                %MinScale = Lambada;
-                MaxRange = ((MaxRange >= Lambada) .* MaxRange) + ((MaxRange < Lambada) .* Lambada);
+            if (MinScale < Lambda)
+                %MinScale = Lambda;
+                MaxRange = ((MaxRange >= Lambda) .* MaxRange) + ((MaxRange < Lambda) .* Lambda);
             end
             %DisplayCell = (MinScale / 100);
             DisplayRange = [(MaxRange .* [2; 2; 1; 0]) (MaxRange / 50)];
@@ -51,9 +51,9 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
         XZPlaneDistance(:,:,index) = reshape(sqrt(sum((TxAntennaPos(:, index) - XZPlanePoint) .^ 2, 1)), [XSize, ZSize]);
     end
 
-    XZPlaneDistance = ((XZPlaneDistance < Lambada) .* Lambada) + ((XZPlaneDistance >= Lambada) .* XZPlaneDistance);
-    XZAttenuation = Lambada ./ (4 .* pi .* XZPlaneDistance);
-    XZPhase = exp(XZPlaneDistance ./ Lambada .* 2 .* pi .* 1i);
+    XZPlaneDistance = ((XZPlaneDistance < Lambda) .* Lambda) + ((XZPlaneDistance >= Lambda) .* XZPlaneDistance);
+    XZAttenuation = Lambda ./ (4 .* pi .* XZPlaneDistance);
+    XZPhase = exp(XZPlaneDistance ./ Lambda .* 2 .* pi .* 1i);
     XZReceiveV = zeros(XSize, ZSize, TxChannelNum);
     XZReceiveH = zeros(XSize, ZSize, TxChannelNum);
     for index = 1 : TxChannelNum
@@ -72,9 +72,9 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
         YZPlaneDistance(:,:,index) = reshape(sqrt(sum((TxAntennaPos(:, index) - YZPlanePoint) .^ 2, 1)), [YSize, ZSize]);
     end
 
-    YZPlaneDistance = ((YZPlaneDistance < Lambada) .* Lambada) + ((YZPlaneDistance >= Lambada) .* YZPlaneDistance);
-    YZAttenuation = Lambada ./ (4 .* pi .* YZPlaneDistance);
-    YZPhase = exp(YZPlaneDistance ./ Lambada .* 2 .* pi .* 1i);
+    YZPlaneDistance = ((YZPlaneDistance < Lambda) .* Lambda) + ((YZPlaneDistance >= Lambda) .* YZPlaneDistance);
+    YZAttenuation = Lambda ./ (4 .* pi .* YZPlaneDistance);
+    YZPhase = exp(YZPlaneDistance ./ Lambda .* 2 .* pi .* 1i);
     YZReceiveV = zeros(YSize, ZSize, TxChannelNum);
     YZReceiveH = zeros(YSize, ZSize, TxChannelNum);
     for index = 1 : TxChannelNum
@@ -93,9 +93,9 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
         XYPlaneDistance(:,:,index) = reshape(sqrt(sum((TxAntennaPos(:, index) - XYPlanePoint) .^ 2, 1)), [XSize, YSize]);
     end
 
-    XYPlaneDistance = ((XYPlaneDistance < Lambada) .* Lambada) + ((XYPlaneDistance >= Lambada) .* XYPlaneDistance);
-    XYAttenuation = Lambada ./ (4 .* pi .* XYPlaneDistance);
-    XYPhase = exp(XYPlaneDistance ./ Lambada .* 2 .* pi .* 1i);
+    XYPlaneDistance = ((XYPlaneDistance < Lambda) .* Lambda) + ((XYPlaneDistance >= Lambda) .* XYPlaneDistance);
+    XYAttenuation = Lambda ./ (4 .* pi .* XYPlaneDistance);
+    XYPhase = exp(XYPlaneDistance ./ Lambda .* 2 .* pi .* 1i);
     XYReceiveV = zeros(XSize, YSize, TxChannelNum);
     XYReceiveH = zeros(XSize, YSize, TxChannelNum);
     for index = 1 : TxChannelNum
@@ -116,9 +116,9 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
         RecvPlaneDistance(:,:,index) = reshape(sqrt(sum((TxAntennaPos(:, index) - RecvPlanePoint) .^ 2, 1)), [XSize, YSize]);
     end
 
-    RecvPlaneDistance = ((RecvPlaneDistance < Lambada) .* Lambada) + ((RecvPlaneDistance >= Lambada) .* RecvPlaneDistance);
-    RecvAttenuation = Lambada ./ (4 .* pi .* RecvPlaneDistance);
-    RecvPhase = exp(RecvPlaneDistance ./ Lambada .* 2 .* pi .* 1i);
+    RecvPlaneDistance = ((RecvPlaneDistance < Lambda) .* Lambda) + ((RecvPlaneDistance >= Lambda) .* RecvPlaneDistance);
+    RecvAttenuation = Lambda ./ (4 .* pi .* RecvPlaneDistance);
+    RecvPhase = exp(RecvPlaneDistance ./ Lambda .* 2 .* pi .* 1i);
     RecvReceiveV = zeros(XSize, YSize, TxChannelNum);
     RecvReceiveH = zeros(XSize, YSize, TxChannelNum);
     for index = 1 : TxChannelNum
@@ -132,7 +132,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     end
     
     MaxDistance = max(Distance, [], 'all');
-    DisplayAttenuationRange = pow2db((Lambada / (4 * pi * MaxDistance)) ^ 2) - 10;
+    DisplayAttenuationRange = pow2db((Lambda / (4 * pi * MaxDistance)) ^ 2) - 10;
 
     figure('units','normalized','outerposition',[0 0 1 1]);
     TiledFigure = tiledlayout("flow");

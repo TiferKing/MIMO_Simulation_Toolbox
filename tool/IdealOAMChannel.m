@@ -41,11 +41,11 @@ function [ChannelImpulseResponse] = IdealOAMChannel(TxChannelNum, RxChannelNum, 
     
     TimeStart = MinDelay - 6 * GaussianTau;
     TimeEndurance = MaxDelay - MinDelay + 12 * GaussianTau;
-    MinimumLambada = physconst('LightSpeed') * (1 / CenterFrequency);
-    if (MinDistance < MinimumLambada)
+    MinimumLambda = physconst('LightSpeed') * (1 / CenterFrequency);
+    if (MinDistance < MinimumLambda)
         warning("The minimum distance between two antennas is shorter than the minimum wavelength (lambda), which may lead to incorrect channel characteristics.");
     end
-    AttenuationdB = -pow2db((MinimumLambada / (4 * pi * MinDistance)) ^ 2);
+    AttenuationdB = -pow2db((MinimumLambda / (4 * pi * MinDistance)) ^ 2);
     
     
     ChannelImpulseResponse = InitChannelImpulseResponse(TxChannelNum, RxChannelNum, TimeStart, TimeEndurance, SampleRate, AttenuationdB, MaximumFrequency, 'Custom');
