@@ -16,6 +16,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     RxAntennaPos = TransformMatrixAngle * RxAntennaPos;
 
     Lambda = physconst('LightSpeed') * (1 / Frequency);
+    %SpinMode = OAMMode;
     SpinMode = 0;
 
     if (~exist('DisplayRange', 'var'))
