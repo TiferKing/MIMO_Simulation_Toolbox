@@ -5,6 +5,12 @@
 %   Please refer to the 'LICENSE' file included in the root directory 
 %   of the project.
 
-addpath('.\..\lib');
-addpath('.\..\probe');
-addpath('.\..\tool');
+if(isunix())
+    addpath('./../lib');
+    addpath('./../probe');
+    addpath('./../tool');
+else
+    addpath('.\..\lib');
+    addpath('.\..\probe');
+    addpath('.\..\tool');
+end
