@@ -55,8 +55,10 @@ function [BaseSignal] = IQDemixing(AnalogSignal, CarrierSignal, SampleRate, Filt
     LOSignal(:,LOStartIndex : LOStopIndex) = CarrierSignal.Signal;
     
     MixSignal = RFSignal .* LOSignal;
-    Filter = FilterDesignFx(CarrierSignal.SampleRate, SampleRate);
-    MixSignal = filter(Filter,1,MixSignal,[],2);
+    if(CarrierSignal.SampleRate > 2 * SampleRate)
+        Filter = FilterDesignFx(CarrierSignal.SampleRate, SampleRate);
+        MixSignal = filter(Filter,1,MixSignal,[],2);
+    end
     TimeEndurance = ceil(TimeEndurance * SampleRate) / SampleRate;
     BaseSignal = InitAnalogSignal(ChannelNum, TimeStart, TimeEndurance, SampleRate, 'Template', 'As', AnalogSignal);
     for index = 1 : ChannelNum

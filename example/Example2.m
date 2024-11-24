@@ -64,7 +64,7 @@ ProbeSpectrum(RecivedSignal, false, 'Recived Spectrum');
 RxPower = ProbeSignalPower(RecivedSignal, 'RxPower');
 CarrierSignal = CarrierGen(CarrierFrequency, ChannelNum, CarrierSampleRate, RecivedSignal.TimeStart, RecivedSignal.TimeEndurance, AnalogSignalPreset);
 BaseSignal = IQDemixing(RecivedSignal, CarrierSignal, BaseAnalogSampleRate, @DemixingResampleFilter);
-[PayloadSiganl, ChannelEstimation] = FrameDecapsulate(BaseSignal, FramePreamble, ShapingFilter);
+[PayloadSiganl, ChannelEstimation] = FrameDecapsulate(BaseSignal, FramePreamble, BaseData.TimeEndurance, ShapingFilter);
 DeorthogonalBase = OrthogonalMatrixUnload(PayloadSiganl, BaseOrthogonalPreset);
 ProbeConstellation(DeorthogonalBase, false, BaseModulationMode, 'Recived IQ Base');
 ProbeSpectrum(DeorthogonalBase, false, 'Recived IQ Base Spectrum');

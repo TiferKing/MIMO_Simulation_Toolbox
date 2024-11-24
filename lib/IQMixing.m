@@ -23,11 +23,7 @@ function [AnalogSignal] = IQMixing(BaseSignal, CarrierSignal)
 %   of the project.
 
     SampleRate = CarrierSignal.SampleRate;
-    [UpRate,DownRate] = rat(CarrierSignal.SampleRate / BaseSignal.SampleRate);
-    IFSignalInput = zeros(BaseSignal.ChannelNum, round(BaseSignal.TimeEndurance * SampleRate));
-    for index = 1 : BaseSignal.ChannelNum
-        IFSignalInput(index,:) = resample(BaseSignal.Signal(index,:), UpRate, DownRate);
-    end
+    IFSignalInput = SignalResample(BaseSignal, CarrierSignal.SampleRate, 'previous');
     if BaseSignal.TimeStart > CarrierSignal.TimeStart
         TimeStart = CarrierSignal.TimeStart;
     else
@@ -49,7 +45,7 @@ function [AnalogSignal] = IQMixing(BaseSignal, CarrierSignal)
     IFStopIndex = round((BaseSignal.TimeEndurance) * SampleRate + IFStartIndex - 1);
     LOStartIndex = round((CarrierSignal.TimeStart - TimeStart) * SampleRate + 1);
     LOStopIndex = round((CarrierSignal.TimeEndurance) * SampleRate + LOStartIndex - 1);
-    IFSignal(:,IFStartIndex : IFStopIndex) = IFSignalInput;
+    IFSignal(:,IFStartIndex : IFStopIndex) = IFSignalInput.Signal;
     LOSignal(:,LOStartIndex : LOStopIndex) = conj(CarrierSignal.Signal);
     % IQ mixing means mixing the I and Q signals independently and then
     % adding them together. However, due to the feature of complex numbers,

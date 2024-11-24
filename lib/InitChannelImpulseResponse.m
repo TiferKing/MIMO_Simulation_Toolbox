@@ -67,7 +67,7 @@ function [ChannelImpulseResponse] = InitChannelImpulseResponse(varargin)
     parse(InPar,varargin{:});
     
     ChannelImpulseResponse = struct;
-    ChannelLength = round(InPar.Results.TimeEndurance * InPar.Results.SampleRate);
+    ChannelLength = floor(InPar.Results.TimeEndurance * InPar.Results.SampleRate);
     ChannelImpulseResponse.ChannelInputNum = InPar.Results.InputChannel;
     ChannelImpulseResponse.ChannelOutputNum = InPar.Results.OutputChannel;
     ChannelImpulseResponse.TimeStart = InPar.Results.TimeStart;

@@ -1,4 +1,4 @@
-function [BaseSignal, ChannelEstimation] = FrameDecapsulate(FrameSignal, PreambleSignal, Filter)
+function [BaseSignal, ChannelEstimation] = FrameDecapsulate(FrameSignal, PreambleSignal, PayloadTimeEndurance, Filter)
 %FrameDecapsulate Decapsulate the frame using channel estimation and unload the preamble.
 %Introduction:
 %   Use the generalized inverse matrix of channel estimation to unload the
@@ -18,6 +18,8 @@ function [BaseSignal, ChannelEstimation] = FrameDecapsulate(FrameSignal, Preambl
 %       Baseband signal with preamble.
 %   PreambleSignal: (AnalogSignal)
 %       The preamble signal.
+%   PayloadTimeEndurance: (double)
+%       The payload time endurance.
 %   Filter: (matrix)
 %       If the signal should be filtered, add a filter here. This argument
 %       may be used for channel shaping filter. If not used, please input
@@ -65,7 +67,11 @@ function [BaseSignal, ChannelEstimation] = FrameDecapsulate(FrameSignal, Preambl
     for index = 1 : ChannelNum
         EstimationStart = PayloadStart - size(Preamble.Signal, 2) - 1;
         EstimationStop = PayloadStart - 1;
-        EstimationSeqRow = downsample(ShapedSignal(index, EstimationStart : EstimationStop), DownSampleRate, round(DownSampleRate / 2));
+        if(DownSampleRate == 1)
+            EstimationSeqRow = ShapedSignal(index, EstimationStart : EstimationStop);
+        else
+            EstimationSeqRow = downsample(ShapedSignal(index, EstimationStart : EstimationStop), DownSampleRate, round(DownSampleRate / 2));
+        end
         % To estimate the channel, the received preamble should be first
         % downsampled to the same sample rate as the sent preamble.
         EstimationSeq(index, :) = EstimationSeqRow(1 : size(PreambleSignal.Signal, 2));
@@ -74,8 +80,9 @@ function [BaseSignal, ChannelEstimation] = FrameDecapsulate(FrameSignal, Preambl
     ChannelEstimation = EstimationSeq * pinv(PreambleSignal.Signal);
     % H = P * H * P ^ (-1)
     TimeStart = FrameSignal.TimeStart + PayloadStart / FrameSignal.SampleRate;
-    TimeEndurance = FrameSignal.TimeEndurance - (PayloadStart - 1) / FrameSignal.SampleRate;
+    TimeEndurance = PayloadTimeEndurance;
     BaseSignal = InitAnalogSignal(ChannelNum, TimeStart, TimeEndurance, FrameSignal.SampleRate, 'Template', 'As', FrameSignal);
     BaseSignal.Signal = pinv(ChannelEstimation) * ShapedSignal(:,PayloadStart : end);
+    BaseSignal.Signal = BaseSignal.Signal(:, 1 : TimeEndurance * FrameSignal.SampleRate);
 end
 

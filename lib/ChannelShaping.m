@@ -29,7 +29,7 @@ function [ShapedSignal] = ChannelShaping(IQSignal, Filter, SampleRate)
 
    FilterLength = length(Filter);
    [Channel,IQLength] = size(IQSignal.Signal);
-   SignalLength = round(IQLength * SampleRate / IQSignal.SampleRate + FilterLength);
+   SignalLength = floor(IQLength * SampleRate / IQSignal.SampleRate + FilterLength);
    ShapedSignal = InitAnalogSignal(Channel, IQSignal.TimeStart, SignalLength / SampleRate, SampleRate, 'Template','As',IQSignal);
    ShapedSignal.Signal = upfirdn([IQSignal.Signal zeros(IQSignal.ChannelNum, 1)]', Filter', SampleRate / IQSignal.SampleRate)';
    % Upfirdn may cause the last sample point to be not upsampled, so it

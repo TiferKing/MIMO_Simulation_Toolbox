@@ -24,13 +24,15 @@ function [FrameSignal] = FrameEncapsulate(BaseSignal, PreambleSignal)
 
     ChannelNum = BaseSignal.ChannelNum;
     TimeStart = BaseSignal.TimeStart + PreambleSignal.TimeStart;
-    TimeEndurance = BaseSignal.TimeEndurance + PreambleSignal.TimeEndurance;
+    TimeEndurance = BaseSignal.TimeEndurance;
     if (PreambleSignal.SampleRate < BaseSignal.SampleRate)
         % If the sample rate of the preamble signal is slower than the
         % baseband signal, the preamble should be first upsampled.
         Preamble = SignalResample(PreambleSignal, BaseSignal.SampleRate, 'previous');
+        TimeEndurance = BaseSignal.TimeEndurance + Preamble.TimeEndurance;
     elseif (PreambleSignal.SampleRate > BaseSignal.SampleRate)
         Preamble = PreambleSignal;
+        TimeEndurance = BaseSignal.TimeEndurance + PreambleSignal.TimeEndurance;
         warning("Preamble cannot sample faster than base, ignore the sample rate.");
     else
         Preamble = PreambleSignal;
