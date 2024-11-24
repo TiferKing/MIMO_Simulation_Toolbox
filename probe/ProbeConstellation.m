@@ -57,12 +57,12 @@ function [] = ProbeConstellation(Signal, SeparateDisplay, ConstellationMap, Titl
         nexttile;
         % Force convert to complex number to avoid the unpredictable plot 
         % error.
-        plot(complex(ConstellationMap),'+','Markersize',30,'color','red','LineWidth',3);
+        plot(complex(ConstellationMap),'+','Markersize',10,'color','red','LineWidth',1);
     end
     for index = 1 : Signal.ChannelNum
         if (SeparateDisplay)
             nexttile;
-            plot(complex(ConstellationMap),'+','Markersize',30,'color','red','LineWidth',3);
+            plot(complex(ConstellationMap),'+','Markersize',10,'color','red','LineWidth',1);
             hold on;
         else
             hold on;
