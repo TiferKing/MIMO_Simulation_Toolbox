@@ -173,7 +173,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     daspect([1 1 1]);
 
     nexttile;
-    surf(XRange, YRange, angle(sum(XYReceiveV,3) .^ 2)');
+    surf(XRange, YRange, angle(sum(XYReceiveV,3))');
     shading interp;
     title('XY Phase');
     view(0,90);
@@ -206,7 +206,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     daspect([1 1 1]);
 
     nexttile;
-    surf(XRange, YRange, angle(sum(RecvReceiveV,3) .^ 2)');
+    surf(XRange, YRange, angle(sum(RecvReceiveV,3))');
     shading interp;
     title('Receiver Phase');
     view(0,90);
@@ -260,7 +260,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     daspect([1 1 1]);
 
     nexttile;
-    surf(XRange, YRange, angle(sum(XYReceiveH,3) .^ 2)');
+    surf(XRange, YRange, angle(sum(XYReceiveH,3))');
     shading interp;
     title('XY Phase');
     view(0,90);
@@ -293,7 +293,7 @@ function [] = IdealOAMVisualizer(TxChannelNum, RxChannelNum, TxAntennaRadius, Rx
     daspect([1 1 1]);
 
     nexttile;
-    surf(XRange, YRange, angle(sum(RecvReceiveH,3) .^ 2)');
+    surf(XRange, YRange, angle(sum(RecvReceiveH,3))');
     shading interp;
     title('Receiver Phase');
     view(0,90);
